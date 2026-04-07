@@ -65,6 +65,11 @@ contract PokemonCard is ERC721URIStorage, ERC2981, Ownable {
         }
     }
 
+    /// @notice Returns the total number of tokens minted
+    function totalSupply() external view returns (uint256) {
+        return _nextTokenId;
+    }
+
     /// @notice Sets default royalty fee for all tokens
     /// @param receiver Address to receive the royalties
     /// @param feeNumerator The fee amount in basis points

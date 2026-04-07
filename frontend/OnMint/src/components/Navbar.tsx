@@ -29,7 +29,7 @@ export default function Navbar() {
           <Link to="/marketplace" className="text-sm font-medium hover:text-fuchsia-400 transition-colors pointer-events-auto cursor-pointer text-gray-300">
             Explore
           </Link>
-          <Link to="/#collections" className="text-sm font-medium hover:text-fuchsia-400 transition-colors pointer-events-auto cursor-pointer text-gray-300">
+          <Link to="/collections" className="text-sm font-medium hover:text-fuchsia-400 transition-colors pointer-events-auto cursor-pointer text-gray-300">
             Collections
           </Link>
           <Link to="/mint" className="text-sm font-medium hover:text-fuchsia-400 transition-colors pointer-events-auto cursor-pointer text-gray-300">
@@ -99,7 +99,7 @@ export default function Navbar() {
           <Link to="/marketplace" className="text-gray-300 hover:text-white font-medium" onClick={() => setIsOpen(false)}>
             Explore
           </Link>
-          <Link to="/#collections" className="text-gray-300 hover:text-white font-medium" onClick={() => setIsOpen(false)}>
+          <Link to="/collections" className="text-gray-300 hover:text-white font-medium" onClick={() => setIsOpen(false)}>
             Collections
           </Link>
           <Link to="/mint" className="text-gray-300 hover:text-white font-medium" onClick={() => setIsOpen(false)}>

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage.tsx";
 import Marketplace from "./pages/Marketplace.tsx";
+import CollectionsPage from "./pages/CollectionsPage.tsx";
 import CardDetail from "./pages/CardDetail.tsx";
 import Profile from "./pages/Profile.tsx";
 import Navbar from "./components/Navbar.tsx";
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/collections" element={<CollectionsPage />} />
           <Route path="/card/:id" element={<CardDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/mint" element={<AdminPage />} />
