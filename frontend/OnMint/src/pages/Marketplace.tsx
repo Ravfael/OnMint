@@ -19,7 +19,7 @@ export default function Marketplace() {
   const { writeContractAsync: writeMarketplace } = useWriteContract();
 
   const [pendingTxHash, setPendingTxHash] = useState<`0x${string}` | undefined>(undefined);
-  
+
   const { isLoading: isTxConfirming, isSuccess: isTxSuccess } = useWaitForTransactionReceipt({
     hash: pendingTxHash,
   });
@@ -33,7 +33,7 @@ export default function Marketplace() {
   }, [isTxSuccess, refetch]);
 
   const filteredCards = useMemo(() => {
-    return cards.filter(card => {
+    return cards.filter((card) => {
       const matchName = card.cardData.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchRarity = rarityFilter === "All" || card.cardData.rarity.toLowerCase() === rarityFilter.toLowerCase();
       return matchName && matchRarity;
@@ -53,7 +53,7 @@ export default function Marketplace() {
 
     try {
       const priceWei = parseEther(priceStr);
-      
+
       // 1. Approve Marketplace
       console.log("Approving...");
       const approveTx = await writeCard({
@@ -63,7 +63,7 @@ export default function Marketplace() {
         args: [POKEMON_MARKETPLACE_ADDRESS, card.tokenId],
       });
       console.log("Approve TX sent:", approveTx);
-      
+
       console.log("Listing...");
       // 2. List Card
       const listTx = await writeMarketplace({
@@ -196,17 +196,8 @@ export default function Marketplace() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredCards.map((card) => {
-             const isOwner = card.owner.toLowerCase() === address?.toLowerCase();
-             return (
-              <PokemonCardItem 
-                key={card.tokenId} 
-                card={card} 
-                onClick={(clickedCard) => setSelectedCard(clickedCard)} 
-                isOwner={isOwner}
-                onListClick={handleListClick}
-                onBuyClick={handleBuyClick}
-              />
-            );
+            const isOwner = card.owner.toLowerCase() === address?.toLowerCase();
+            return <PokemonCardItem key={card.tokenId} card={card} onClick={(clickedCard) => setSelectedCard(clickedCard)} isOwner={isOwner} onListClick={handleListClick} onBuyClick={handleBuyClick} />;
           })}
         </div>
       )}
@@ -237,7 +228,7 @@ export default function Marketplace() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-3xl font-extrabold text-white">{selectedCard.cardData?.name || selectedCard.metadata?.name || "Unknown"}</h2>
-                  <span className="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-sm font-bold uppercase rounded-lg">{selectedCard.cardData?.rarity || "COMMON"}</span>
+                  {/* <span className="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-sm font-bold uppercase rounded-lg">{selectedCard.cardData?.rarity || "COMMON"}</span> */}
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400">
                   <span className="bg-gray-800 px-3 py-1 rounded-md">Token ID: #{selectedCard.tokenId.toString()}</span>

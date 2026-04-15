@@ -29,7 +29,6 @@ export default function CollectionsPage() {
     }, 3000);
   };
 
-
   if (!isConnected) {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-6 container mx-auto px-4 mt-6">
@@ -129,7 +128,7 @@ export default function CollectionsPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-3xl font-extrabold text-white">{selectedCard.cardData?.name || selectedCard.metadata?.name || "Unknown"}</h2>
-                  <span className="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-sm font-bold uppercase rounded-lg">{selectedCard.cardData?.rarity || "COMMON"}</span>
+                  {/* <span className="px-3 py-1 bg-yellow-500/20 border border-yellow-500/50 text-yellow-400 text-sm font-bold uppercase rounded-lg">{selectedCard.cardData?.rarity || "COMMON"}</span> */}
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-sm text-gray-400">
                   <span className="bg-gray-800 px-3 py-1 rounded-md">Token ID: #{selectedCard.tokenId.toString()}</span>

@@ -85,7 +85,7 @@ export function PokemonCardItem({ card, onClick, isOwner = false, onBuyClick, on
         {/* Image bottom shadow fade */}
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#242424] to-transparent pointer-events-none"></div>
 
-        {getRarityBadge()}
+        {/* {getRarityBadge()} */}
       </div>
 
       <div className="p-5 flex flex-col flex-grow relative z-10 -mt-8">
@@ -109,36 +109,34 @@ export function PokemonCardItem({ card, onClick, isOwner = false, onBuyClick, on
         <div className="mt-auto flex flex-col gap-2">
           {card.listing?.isActive ? (
             isOwner ? (
-               <button 
-                 className="w-full bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm cursor-not-allowed"
-                 disabled
-                 onClick={(e) => e.stopPropagation()}
-               >
-                 Listed for {formatEther(card.listing.price)} ETH
-               </button>
+              <button className="w-full bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm cursor-not-allowed" disabled onClick={(e) => e.stopPropagation()}>
+                Listed for {formatEther(card.listing.price)} ETH
+              </button>
             ) : (
-               <button 
-                 className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
-                 onClick={(e) => { e.stopPropagation(); onBuyClick?.(e, card); }}
-               >
-                 Buy for {formatEther(card.listing.price)} ETH
-               </button>
+              <button
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onBuyClick?.(e, card);
+                }}
+              >
+                Buy for {formatEther(card.listing.price)} ETH
+              </button>
             )
           ) : isOwner ? (
-             <button 
-               className="w-full border border-[#6c63ff] text-[#6c63ff] hover:bg-[#6c63ff]/10 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
-               onClick={(e) => { e.stopPropagation(); onListClick?.(e, card); }}
-             >
-               List for Sale
-             </button>
+            <button
+              className="w-full border border-[#6c63ff] text-[#6c63ff] hover:bg-[#6c63ff]/10 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onListClick?.(e, card);
+              }}
+            >
+              List for Sale
+            </button>
           ) : (
-             <button 
-               className="w-full bg-gray-800 text-gray-400 font-medium py-2 px-4 rounded-lg transition-colors text-sm cursor-not-allowed"
-               disabled
-               onClick={(e) => e.stopPropagation()}
-             >
-               Not for Sale
-             </button>
+            <button className="w-full bg-gray-800 text-gray-400 font-medium py-2 px-4 rounded-lg transition-colors text-sm cursor-not-allowed" disabled onClick={(e) => e.stopPropagation()}>
+              Not for Sale
+            </button>
           )}
 
           <button
