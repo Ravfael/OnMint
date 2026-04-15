@@ -29,6 +29,7 @@ export default function CollectionsPage() {
     }, 3000);
   };
 
+
   if (!isConnected) {
     return (
       <div className="min-h-[80vh] flex flex-col items-center justify-center space-y-6 container mx-auto px-4">
@@ -62,10 +63,10 @@ export default function CollectionsPage() {
           <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 text-center mb-4 font-poppins">My Collection</h1>
           <p className="text-gray-400 text-lg">Manage your personal collection of Pokemon NFTs</p>
         </div>
-        {/* <div className="bg-purple-600/20 border border-purple-500/30 text-purple-400 px-5 py-2.5 rounded-xl font-bold text-lg shadow-[0_0_15px_rgba(147,51,234,0.15)] flex items-center gap-2 mr-3 mt-9 justify-end">
+        <div className="bg-purple-600/20 border border-purple-500/30 text-purple-400 px-5 py-2.5 rounded-xl font-bold text-lg shadow-[0_0_15px_rgba(147,51,234,0.15)] flex items-center gap-2 mr-3 mt-9 justify-end">
           <span>{totalOwned}</span>
           <span className="text-purple-300/80 font-medium text-sm">Cards</span>
-        </div> */}
+        </div>
       </div>
 
       {isLoading ? (

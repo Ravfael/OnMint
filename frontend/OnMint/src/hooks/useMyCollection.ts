@@ -1,8 +1,11 @@
-import { useState, useCallback, useEffect } from "react";
-import { useAccount, useReadContract, usePublicClient } from "wagmi";
+import { useState, useCallback, useEffect, useRef } from "react";
+import { useAccount, usePublicClient } from "wagmi";
 import type { Abi } from "viem";
 
-import { POKEMON_CARD_ADDRESS, POKEMON_CARD_ABI } from "../contracts/addresses";
+import {
+  POKEMON_CARD_ADDRESS,
+  POKEMON_CARD_ABI,
+} from "../contracts/addresses";
 import type { PokemonCard } from "./usePokemonCards";
 
 export function useMyCollection() {
@@ -10,23 +13,25 @@ export function useMyCollection() {
   const publicClient = usePublicClient();
 
   const [cards, setCards] = useState<PokemonCard[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
-  // 1. Call totalSupply() on contract
-  const { data: totalSupplyRaw, refetch: refetchTotalSupply } = useReadContract({
-    address: POKEMON_CARD_ADDRESS as `0x${string}`,
-    abi: POKEMON_CARD_ABI as Abi,
-    functionName: "totalSupply",
-  });
+  // A manual trigger counter — incrementing forces a re-fetch
+  const [fetchTrigger, setFetchTrigger] = useState(0);
 
-  const totalSupply = totalSupplyRaw ? Number(totalSupplyRaw) : 0;
-  const totalOwned = cards.length;
+  // Track mount state to avoid setting state after unmount
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
 
   const fetchMyCards = useCallback(async () => {
-    // If wallet not connected or no data
-    if (!publicClient || !connectedAddress || totalSupply === 0) {
+    if (!publicClient || !connectedAddress) {
       setCards([]);
+      setIsLoading(false);
       return;
     }
 
@@ -35,33 +40,42 @@ export function useMyCollection() {
 
     try {
       const fetchedCards: PokemonCard[] = [];
-      const gateway = import.meta.env.VITE_PINATA_GATEWAY || "gateway.pinata.cloud";
+      const gateway =
+        import.meta.env.VITE_PINATA_GATEWAY || "gateway.pinata.cloud";
       const ipfsToHttp = (url: string) => {
         if (!url) return "";
-        return url.startsWith("ipfs://") ? `https://${gateway}/ipfs/${url.replace("ipfs://", "")}` : url;
+        return url.startsWith("ipfs://")
+          ? `https://${gateway}/ipfs/${url.replace("ipfs://", "")}`
+          : url;
       };
 
-      // 2. Loop tokenId from 1 to totalSupply
-      for (let tokenId = 1; tokenId <= totalSupply; tokenId++) {
+      // Use the same loop-until-revert pattern as usePokemonCards.
+      // This doesn't depend on totalSupply (which can be cached/stale).
+      let currentTokenId = 0;
+      while (true) {
+        let owner = "";
         try {
-          // 3. For each tokenId call ownerOf(tokenId)
-          const owner = (await publicClient.readContract({
+          owner = (await publicClient.readContract({
             address: POKEMON_CARD_ADDRESS as `0x${string}`,
             abi: POKEMON_CARD_ABI as Abi,
             functionName: "ownerOf",
-            args: [BigInt(tokenId)],
+            args: [BigInt(currentTokenId)],
           })) as string;
+        } catch {
+          // ownerOf reverts when token doesn't exist → we've reached the end
+          break;
+        }
 
-          // 4. If ownerOf === connected wallet address (case-insensitive)
-          if (owner.toLowerCase() === connectedAddress.toLowerCase()) {
-            // 5. Fetch tokenURI, cardData
+        // Check if this token belongs to the connected wallet
+        if (owner.toLowerCase() === connectedAddress.toLowerCase()) {
+          try {
             const [tokenURI, cardDataRaw] = await Promise.all([
               publicClient
                 .readContract({
                   address: POKEMON_CARD_ADDRESS as `0x${string}`,
                   abi: POKEMON_CARD_ABI as Abi,
                   functionName: "tokenURI",
-                  args: [BigInt(tokenId)],
+                  args: [BigInt(currentTokenId)],
                 })
                 .catch(() => "") as Promise<string>,
               publicClient
@@ -69,9 +83,14 @@ export function useMyCollection() {
                   address: POKEMON_CARD_ADDRESS as `0x${string}`,
                   abi: POKEMON_CARD_ABI as Abi,
                   functionName: "cardData",
-                  args: [BigInt(tokenId)],
+                  args: [BigInt(currentTokenId)],
                 })
-                .catch(() => null) as Promise<{ name: string; rarity: string; series: bigint; cardNumber: bigint } | null>,
+                .catch(() => null) as Promise<{
+                name: string;
+                rarity: string;
+                series: bigint;
+                cardNumber: bigint;
+              } | null>,
             ]);
 
             let metadata = null;
@@ -88,51 +107,84 @@ export function useMyCollection() {
               }
             }
 
-            // Include card
+            // Parse cardData (may come back as array or object depending on viem version)
+            let finalCardData = {
+              name: "",
+              rarity: "",
+              series: 0,
+              cardNumber: 0,
+            };
+            if (Array.isArray(cardDataRaw)) {
+              finalCardData = {
+                name: String((cardDataRaw as unknown[])[0] || ""),
+                rarity: String((cardDataRaw as unknown[])[1] || ""),
+                series: Number((cardDataRaw as unknown[])[2] || 0),
+                cardNumber: Number((cardDataRaw as unknown[])[3] || 0),
+              };
+            } else if (cardDataRaw && typeof cardDataRaw === "object") {
+              finalCardData = {
+                name: cardDataRaw.name || "",
+                rarity: cardDataRaw.rarity || "",
+                series: Number(cardDataRaw.series ?? 0n),
+                cardNumber: Number(cardDataRaw.cardNumber ?? 0n),
+              };
+            }
+
             fetchedCards.push({
-              tokenId,
-              tokenURI,
+              tokenId: currentTokenId,
+              tokenURI: tokenURI || "",
               imageUrl,
               metadata,
-              cardData: cardDataRaw
-                ? {
-                    name: cardDataRaw.name,
-                    rarity: cardDataRaw.rarity,
-                    series: Number(cardDataRaw.series),
-                    cardNumber: Number(cardDataRaw.cardNumber),
-                  }
-                : { name: "", rarity: "", series: 0, cardNumber: 0 },
+              cardData: finalCardData,
               owner,
             });
+          } catch (err) {
+            console.error(
+              `Error fetching data for token ${currentTokenId}:`,
+              err
+            );
           }
-        } catch (err) {
-          // Mute error for disconnected token ids (if burned/missing)
         }
+
+        currentTokenId++;
       }
 
-      setCards(fetchedCards);
+      if (isMounted.current) {
+        setCards(fetchedCards);
+      }
     } catch (err: unknown) {
       console.error("Error fetching my collection:", err);
-      setError(err instanceof Error ? err : new Error("Failed to fetch collection"));
+      if (isMounted.current) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch collection")
+        );
+      }
     } finally {
-      setIsLoading(false);
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
     }
-  }, [publicClient, connectedAddress, totalSupply]);
+  }, [publicClient, connectedAddress, fetchTrigger]);
 
+  // Fetch whenever dependencies change
   useEffect(() => {
     fetchMyCards();
   }, [fetchMyCards]);
 
+  // Force a fresh fetch every time the component mounts (page navigation)
+  useEffect(() => {
+    setFetchTrigger((prev) => prev + 1);
+  }, []);
+
   const refetch = useCallback(() => {
-    refetchTotalSupply();
-    fetchMyCards();
-  }, [refetchTotalSupply, fetchMyCards]);
+    setFetchTrigger((prev) => prev + 1);
+  }, []);
 
   return {
     cards,
     isLoading,
     error,
     refetch,
-    totalOwned,
+    totalOwned: cards.length,
   };
 }
