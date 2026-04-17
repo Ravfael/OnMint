@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import CardComponent from "../components/CardComponent";
+import FeaturedMarquee from "../components/FeaturedMarquee";
 import { Wallet, Search, Box, Twitter, Disc as Discord, Instagram, Shield, Award, Zap, Star } from "lucide-react";
 import heroImg from "../assets/1.jpg";
 import img1 from "../assets/1.jpg";
@@ -9,6 +9,15 @@ import img3 from "../assets/3.jpg";
 import img4 from "../assets/4.jpg";
 import img5 from "../assets/5.jpg";
 import img6 from "../assets/6.jpg";
+
+const featuredCards = [
+  { id: "1", image: img1, price: "1.8", name: "Charizard" },
+  { id: "2", image: img2, price: "2.5", name: "Pikachu" },
+  { id: "3", image: img3, price: "6.4", name: "Lugia" },
+  { id: "4", image: img4, price: "3.2", name: "Dialga" },
+  { id: "5", image: img5, price: "4.0", name: "Palkia" },
+  { id: "6", image: img6, price: "5.1", name: "Lunala" },
+];
 
 export default function LandingPage() {
   const [stats, setStats] = useState({ minted: 0, volume: 0, trainers: 0, generations: 0 });
@@ -225,26 +234,19 @@ export default function LandingPage() {
       </section>
 
       {/* Featured Cards */}
-      <section className="py-32 px-6 max-w-7xl mx-auto" id="collections">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16">
-          <div>
-            <h2 className="text-4xl md:text-5xl font-black mb-4">Featured Cards</h2>
+      <section className="py-24" id="collections">
+        <div className="relative flex items-center justify-center mb-12 px-6 max-w-7xl mx-auto">
+          <div className="text-center">
+            <h2 className="text-4xl md:text-5xl font-black mb-3">Featured Cards</h2>
             <p className="text-gray-400 text-lg">Hand-picked legendary drops. Don't miss your chance.</p>
           </div>
-          <Link to="/marketplace" className="hidden md:block text-fuchsia-400 hover:text-fuchsia-300 font-bold border-b-2 border-fuchsia-500/30 hover:border-fuchsia-400 pb-1 px-1 transition-all">
+          <Link to="/marketplace" className="absolute right-6 hidden md:block text-fuchsia-400 hover:text-fuchsia-300 font-bold border-b-2 border-fuchsia-500/30 hover:border-fuchsia-400 pb-1 px-1 transition-all">
             View All Series
           </Link>
         </div>
 
-        {/* Hidden scrollbar, snap scrolling row */}
-        <div className="flex overflow-x-auto gap-8 pb-12 snap-x snap-mandatory hide-scrollbars -mx-6 px-6 sm:mx-0 sm:px-0">
-          <CardComponent id="1" image={img1} price="1.8" name="Charizard" />
-          <CardComponent id="2" image={img2} price="2.5" name="Pikachu" />
-          <CardComponent id="3" image={img3} price="6.4" name="Lugia" />
-          <CardComponent id="4" image={img4} price="3.2" name="Dialga" />
-          <CardComponent id="5" image={img5} price="4.0" name="Palkia" />
-          <CardComponent id="6" image={img6} price="5.1" name="Lunala" />
-        </div>
+        {/* GSAP Infinite Marquee — full-bleed */}
+        <FeaturedMarquee cards={featuredCards} />
       </section>
 
       {/* How it Works */}
