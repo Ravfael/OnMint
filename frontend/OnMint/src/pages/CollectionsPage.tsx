@@ -57,12 +57,12 @@ export default function CollectionsPage() {
         </div>
       </div>
 
-      <div className="relative flex justify-center items-center mb-10 mt-7">
-        <div className="flex flex-col mt-9 items-center">
-          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 text-center mb-4 font-poppins">My Collection</h1>
-          <p className="text-gray-400 text-lg">Manage your personal collection of Pokemon NFTs</p>
+      <div className="relative flex items-center justify-center mb-10 mt-14 px-2">
+        <div className="text-center">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 mb-2 font-poppins">My Collection</h1>
+          <p className="text-gray-400 text-base sm:text-lg">Manage your personal collection of Pokemon NFTs</p>
         </div>
-        <div className="absolute right-0 mt-9 bg-purple-600/20 border border-purple-500/30 text-purple-400 px-5 py-2.5 rounded-xl font-bold text-lg shadow-[0_0_15px_rgba(147,51,234,0.15)] flex items-center gap-2">
+        <div className="absolute right-0 hidden sm:flex bg-purple-600/20 border border-purple-500/30 text-purple-400 px-5 py-2.5 rounded-xl font-bold text-lg shadow-[0_0_15px_rgba(147,51,234,0.15)] items-center gap-2 shrink-0">
           <span>{totalOwned}</span>
           <span className="text-purple-300/80 font-medium text-sm">Cards</span>
         </div>

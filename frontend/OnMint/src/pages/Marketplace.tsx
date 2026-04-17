@@ -106,8 +106,8 @@ export default function Marketplace() {
     <div className="pt-32 pb-20 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 gap-6">
         <div>
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4">Marketplace</h1>
-          <p className="text-gray-400 text-lg">Discover, buy, and trade the rarest Pokemon NFTs.</p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-3">Marketplace</h1>
+          <p className="text-gray-400 text-base sm:text-lg">Discover, buy, and trade the rarest Pokemon NFTs.</p>
         </div>
         <button
           onClick={refetch}
@@ -175,7 +175,7 @@ export default function Marketplace() {
           ))}
         </div>
       ) : filteredCards.length === 0 && !isLoading ? (
-        <div className="text-center py-32 bg-[#1a1a1a] border border-gray-800 rounded-2xl flex flex-col items-center justify-center">
+        <div className="text-center py-16 sm:py-32 bg-[#1a1a1a] border border-gray-800 rounded-2xl flex flex-col items-center justify-center px-4">
           <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6">
             <span className="text-4xl">🔍</span>
           </div>

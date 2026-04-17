@@ -18,10 +18,10 @@ function MarqueeCardItem({ card, tilt }: { card: MarqueeCard; tilt: number }) {
     <div
       className="marquee-card group relative bg-gray-900 rounded-2xl border border-white/10 overflow-hidden cursor-pointer shrink-0"
       style={{
-        width: "280px", // lebih besar dari 200px
-        height: "380px", // lebih besar dari 280px
+        width: "clamp(160px, 22vw, 280px)",
+        height: "clamp(220px, 30vw, 380px)",
         transform: `rotate(${tilt}deg)`,
-        margin: "0 16px",
+        margin: "0 clamp(8px, 1.5vw, 16px)",
         boxShadow: "0 8px 32px rgba(0,0,0,0.6)",
         transition: "box-shadow 0.3s ease, transform 0.3s ease",
       }}
