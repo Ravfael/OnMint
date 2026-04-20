@@ -28,7 +28,7 @@ export function PokemonCardItem({ card, onClick, isOwner = false, onBuyClick, on
     );
   }
 
-  const { name, rarity, series, cardNumber } = card.cardData;
+  const { name, series, cardNumber } = card.cardData;
 
   // Format ID and Card Number to be 3 digits minimum
   const formattedTokenId = card.tokenId.toString().padStart(3, "0");
@@ -37,29 +37,6 @@ export function PokemonCardItem({ card, onClick, isOwner = false, onBuyClick, on
   const formatOwnerAddress = (address: string) => {
     if (!address || address.length < 10) return address;
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
-  // Badge mapping to match the landing page rarity colors
-  const getRarityBadge = () => {
-    const rarityLower = rarity.toLowerCase();
-
-    if (rarityLower === "ultra rare") {
-      return (
-        <span className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-yellow-700 text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-600 font-bold px-3 py-1 rounded-lg text-xs shadow-[0_0_10px_rgba(250,204,21,0.4)] z-10">
-          Ultra Rare
-        </span>
-      );
-    }
-
-    if (rarityLower === "rare") {
-      return <span className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-blue-900 text-blue-500 font-bold px-3 py-1 rounded-lg text-xs shadow-[0_0_10px_rgba(59,130,246,0.4)] z-10">Rare</span>;
-    }
-
-    if (rarityLower === "uncommon") {
-      return <span className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-green-900 text-green-500 font-bold px-3 py-1 rounded-lg text-xs shadow-[0_0_10px_rgba(34,197,94,0.4)] z-10">Uncommon</span>;
-    }
-
-    return <span className="absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-gray-700 text-gray-400 font-bold px-3 py-1 rounded-lg text-xs shadow-[0_0_10px_rgba(156,163,175,0.4)] z-10">Common</span>;
   };
 
   return (

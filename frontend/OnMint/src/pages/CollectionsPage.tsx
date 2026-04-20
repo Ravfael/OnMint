@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
@@ -8,7 +8,7 @@ import type { PokemonCard } from "../hooks/usePokemonCards";
 import { X } from "lucide-react";
 
 export default function CollectionsPage() {
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const { cards, isLoading, totalOwned } = useMyCollection();
 
   const [selectedCard, setSelectedCard] = useState<PokemonCard | null>(null);
